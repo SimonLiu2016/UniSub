@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class DragDropPlaceholder extends StatelessWidget {
   final Function(String) onFileDropped;
@@ -7,6 +8,9 @@ class DragDropPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
     return Container(
       height: 300,
       decoration: BoxDecoration(
@@ -23,18 +27,25 @@ class DragDropPlaceholder extends StatelessWidget {
             color: Colors.grey.withOpacity(0.7),
           ),
           const SizedBox(height: 24),
-          const Text(
-            '拖曳影片至此',
+          Text(
+            localizations.dragHint,
             style: TextStyle(
-              color: Colors.white70,
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
               fontSize: 24,
               fontWeight: FontWeight.w300,
             ),
           ),
           const SizedBox(height: 8),
           Text(
-            '或點擊下方按鈕選擇檔案',
-            style: TextStyle(color: Colors.grey.withOpacity(0.7), fontSize: 16),
+            '${localizations.orText} ${localizations.selectFile}',
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.grey.withOpacity(0.7)
+                  : Colors.black54,
+              fontSize: 16,
+            ),
           ),
         ],
       ),

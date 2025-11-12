@@ -82,12 +82,15 @@ class UniSubApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('zh', 'TW'), // Traditional Chinese
         Locale('zh', 'CN'), // Simplified Chinese
         Locale('en'), // English
         Locale('ja'), // Japanese
         Locale('ko'), // Korean
       ],
+      localeResolutionCallback: (locale, supportedLocales) {
+        // 默认使用英文
+        return const Locale('en');
+      },
       home: const HomeView(),
       routes: {
         '/settings': (context) => const SettingsPage(),

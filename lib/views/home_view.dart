@@ -223,7 +223,7 @@ class _HomeViewState extends State<HomeView> {
         children: [
           // Logo
           Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
+            padding: const EdgeInsets.only(left: 24, right: 16),
             child: Text(
               'UniSub',
               style: TextStyle(
@@ -303,7 +303,6 @@ class _HomeViewState extends State<HomeView> {
               // TODO: 实现语言切换功能
             },
             itemBuilder: (context) => [
-              const PopupMenuItem(value: 'zh_TW', child: Text('繁體中文')),
               const PopupMenuItem(value: 'zh_CN', child: Text('简体中文')),
               const PopupMenuItem(value: 'en', child: Text('English')),
               const PopupMenuItem(value: 'ja', child: Text('日本語')),
@@ -349,12 +348,7 @@ class _HomeViewState extends State<HomeView> {
           const SizedBox(height: 24),
           Text(
             appState.processingStatus,
-            style: TextStyle(
-              color: theme.brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black87,
-              fontSize: 18,
-            ),
+            style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 18),
           ),
           const SizedBox(height: 8),
           Text(
@@ -385,7 +379,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildInputView(AppLocalizations localizations) {
     final theme = Theme.of(context);
-    
+
     return Center(
       child: Container(
         width: 600,
@@ -410,7 +404,7 @@ class _HomeViewState extends State<HomeView> {
                 ),
               ),
               icon: Icon(
-                Icons.file_open, 
+                Icons.file_open,
                 color: theme.brightness == Brightness.dark
                     ? Colors.white
                     : Colors.black87,
@@ -433,7 +427,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildPlayerView() {
     final theme = Theme.of(context);
-    
+
     return Column(
       children: [
         // 视频播放器区域 (70% 高度)
@@ -522,6 +516,7 @@ class _HomeViewState extends State<HomeView> {
 
   Widget _buildStatusBar(AppStateManager appState) {
     final theme = Theme.of(context);
+    final localizations = AppLocalizations.of(context);
 
     return Container(
       height: 40,
@@ -568,7 +563,7 @@ class _HomeViewState extends State<HomeView> {
               // TODO: 实现导出功能
             },
             child: Text(
-              '↓ 匯出 SRT',
+              '↓ ${localizations.exportSubtitle} SRT',
               style: TextStyle(
                 color: theme.brightness == Brightness.dark
                     ? Colors.white70
