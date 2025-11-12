@@ -43,3 +43,65 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# macOS specific
+*.dmg
+*.app
+*.pkg
+*.ipa
+*.xcarchive
+*.mobileprovision
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.perspectivev3
+**/*~
+*.xccheckout
+*.xcscmblueprint
+
+# Xcode build
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.xcarchive
+*.dSYM.zip
+*.dSYM
+
+# Code signing
+*.cer
+*.cert
+*.p12
+*.pem
+
+# Temporary files
+*.tmp
+*.temp
+
+# Model files (downloaded at runtime)
+/models/
+/assets/models/
+
+# Cache directories
+*/Cache/
+*/Caches/
+/Library/Caches/
+/tmp/
+
+# Log files
+*.log
+
+# IDE specific
+.vscode/
+*.code-workspace
