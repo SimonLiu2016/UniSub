@@ -180,11 +180,14 @@ class _HomeViewState extends State<HomeView> {
     final appState = Provider.of<AppStateManager>(context);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // 深色背景
+      backgroundColor: null,
       body: Column(
         children: [
-          // 顶部工具栏
-          _buildTopBar(localizations),
+          // 顶部工具栏 - 添加顶部安全边距以避免与系统控件重叠
+          Container(
+            padding: const EdgeInsets.only(top: 20), // 添加顶部边距
+            child: _buildTopBar(localizations),
+          ),
 
           // 主内容区
           Expanded(
@@ -203,25 +206,30 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildTopBar(AppLocalizations localizations) {
+    final theme = Theme.of(context);
+
     return Container(
       height: 60,
       decoration: BoxDecoration(
-        color: Colors.black54,
+        color: theme.colorScheme.surface,
         border: Border(
-          bottom: BorderSide(color: Colors.grey.withOpacity(0.3), width: 0.5),
+          bottom: BorderSide(
+            color: theme.colorScheme.outlineVariant,
+            width: 0.5,
+          ),
         ),
       ),
       child: Row(
         children: [
           // Logo
-          const Padding(
-            padding: EdgeInsets.only(left: 16, right: 16),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, right: 16),
             child: Text(
               'UniSub',
               style: TextStyle(
-                color: Color(0xFF007AFF),
+                color: theme.colorScheme.primary,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -232,19 +240,32 @@ class _HomeViewState extends State<HomeView> {
               height: 36,
               margin: const EdgeInsets.only(right: 16),
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8),
+                color: theme.colorScheme.surfaceVariant,
+                borderRadius: BorderRadius.circular(18),
               ),
               child: TextField(
                 controller: _urlController,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black87,
+                ),
                 decoration: InputDecoration(
                   hintText: localizations.pasteUrl,
-                  hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
+                  hintStyle: TextStyle(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54,
+                  ),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   suffixIcon: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.white70),
+                    icon: Icon(
+                      Icons.send,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.white70
+                          : Colors.black54,
+                    ),
                     onPressed: () {
                       if (_urlController.text.isNotEmpty) {
                         _onUrlSubmitted(_urlController.text);
@@ -259,7 +280,12 @@ class _HomeViewState extends State<HomeView> {
 
           // 实时翻译开关
           IconButton(
-            icon: const Icon(Icons.flash_on, color: Colors.white70),
+            icon: Icon(
+              Icons.flash_on,
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
+            ),
             onPressed: () {
               // TODO: 实现实时翻译开关功能
             },
@@ -267,7 +293,12 @@ class _HomeViewState extends State<HomeView> {
 
           // 语言切换
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language, color: Colors.white70),
+            icon: Icon(
+              Icons.language,
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
+            ),
             onSelected: (String language) {
               // TODO: 实现语言切换功能
             },
@@ -282,7 +313,12 @@ class _HomeViewState extends State<HomeView> {
 
           // 设置按钮
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white70),
+            icon: Icon(
+              Icons.settings,
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
+            ),
             onPressed: () {
               // 导航到设置页面
               Navigator.pushNamed(context, '/settings');
@@ -299,6 +335,8 @@ class _HomeViewState extends State<HomeView> {
     AppLocalizations localizations,
     AppStateManager appState,
   ) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -311,19 +349,34 @@ class _HomeViewState extends State<HomeView> {
           const SizedBox(height: 24),
           Text(
             appState.processingStatus,
-            style: const TextStyle(color: Colors.white, fontSize: 18),
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black87,
+              fontSize: 18,
+            ),
           ),
           const SizedBox(height: 8),
           Text(
             _selectedFilePath != null
                 ? localizations.transcribing
                 : localizations.downloadAudio,
-            style: const TextStyle(color: Colors.grey, fontSize: 14),
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.grey
+                  : Colors.black54,
+              fontSize: 14,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             '${(appState.processingProgress * 100).round()}%',
-            style: const TextStyle(color: Colors.white70, fontSize: 16),
+            style: TextStyle(
+              color: theme.brightness == Brightness.dark
+                  ? Colors.white70
+                  : Colors.black54,
+              fontSize: 16,
+            ),
           ),
         ],
       ),
@@ -331,6 +384,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildInputView(AppLocalizations localizations) {
+    final theme = Theme.of(context);
+    
     return Center(
       child: Container(
         width: 600,
@@ -345,7 +400,7 @@ class _HomeViewState extends State<HomeView> {
             ElevatedButton.icon(
               onPressed: _pickFile,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF007AFF),
+                backgroundColor: theme.colorScheme.primary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 16,
@@ -354,10 +409,20 @@ class _HomeViewState extends State<HomeView> {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              icon: const Icon(Icons.file_open, color: Colors.white),
+              icon: Icon(
+                Icons.file_open, 
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white
+                    : Colors.black87,
+              ),
               label: Text(
                 localizations.selectFile,
-                style: const TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black87,
+                  fontSize: 16,
+                ),
               ),
             ),
           ],
@@ -367,6 +432,8 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildPlayerView() {
+    final theme = Theme.of(context);
+    
     return Column(
       children: [
         // 视频播放器区域 (70% 高度)
@@ -419,12 +486,14 @@ class _HomeViewState extends State<HomeView> {
                 onTap: _toggleTimeline,
                 child: Container(
                   height: 20,
-                  color: Colors.black54,
+                  color: theme.colorScheme.surface,
                   child: Icon(
                     _isTimelineCollapsed
                         ? Icons.arrow_drop_up
                         : Icons.arrow_drop_down,
-                    color: Colors.white70,
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54,
                   ),
                 ),
               ),
@@ -452,12 +521,14 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _buildStatusBar(AppStateManager appState) {
+    final theme = Theme.of(context);
+
     return Container(
       height: 40,
       decoration: BoxDecoration(
-        color: Colors.black54,
+        color: theme.colorScheme.surface,
         border: Border(
-          top: BorderSide(color: Colors.grey.withOpacity(0.3), width: 0.5),
+          top: BorderSide(color: theme.colorScheme.outlineVariant, width: 0.5),
         ),
       ),
       child: Row(
@@ -482,7 +553,12 @@ class _HomeViewState extends State<HomeView> {
           Expanded(
             child: Text(
               appState.isProcessing ? appState.processingStatus : '就绪',
-              style: const TextStyle(color: Colors.white70, fontSize: 14),
+              style: TextStyle(
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.black54,
+                fontSize: 14,
+              ),
             ),
           ),
 
@@ -491,9 +567,14 @@ class _HomeViewState extends State<HomeView> {
             onPressed: () {
               // TODO: 实现导出功能
             },
-            child: const Text(
+            child: Text(
               '↓ 匯出 SRT',
-              style: TextStyle(color: Colors.white70, fontSize: 14),
+              style: TextStyle(
+                color: theme.brightness == Brightness.dark
+                    ? Colors.white70
+                    : Colors.black54,
+                fontSize: 14,
+              ),
             ),
           ),
 

@@ -14,19 +14,32 @@ class LanguageSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DropdownButton<String>(
-      value: selectedLanguage,
-      items: languages.map((language) {
-        return DropdownMenuItem<String>(
-          value: language['code'],
-          child: Text(language['name']!),
-        );
-      }).toList(),
-      onChanged: (value) {
-        if (value != null) {
-          onLanguageChanged(value);
-        }
-      },
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark
+            ? Colors.grey[800]
+            : Colors.grey[100],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButton<String>(
+        value: selectedLanguage,
+        items: languages.map((language) {
+          return DropdownMenuItem<String>(
+            value: language['code'],
+            child: Text(language['name']!),
+          );
+        }).toList(),
+        onChanged: (value) {
+          if (value != null) {
+            onLanguageChanged(value);
+          }
+        },
+        isExpanded: true,
+        underline: const SizedBox(),
+      ),
     );
   }
 }

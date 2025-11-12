@@ -7,10 +7,12 @@ import 'views/settings_page.dart';
 import 'views/model_manager_view.dart';
 import 'utils/notification_utils.dart';
 import 'utils/app_state_manager.dart';
+import 'utils/system_tray.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationUtils.initialize();
+  await SystemTray.initialize(); // 初始化系统托盘
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppStateManager(),
@@ -37,6 +39,17 @@ class UniSubApp extends StatelessWidget {
           backgroundColor: Color(0xFF007AFF),
           foregroundColor: Colors.white,
         ),
+        cardTheme: const CardThemeData(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+        listTileTheme: const ListTileThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -44,13 +57,24 @@ class UniSubApp extends StatelessWidget {
           seedColor: const Color(0xFF007AFF),
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF121212),
+        scaffoldBackgroundColor: null,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E1E1E),
+          backgroundColor: null,
           foregroundColor: Colors.white,
         ),
+        cardTheme: const CardThemeData(
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
+        listTileTheme: const ListTileThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(12)),
+          ),
+        ),
       ),
-      themeMode: ThemeMode.dark, // 默认深色模式
+      themeMode: ThemeMode.light, // 默认浅色模式
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

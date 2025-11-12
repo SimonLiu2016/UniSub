@@ -57,6 +57,7 @@ class AppLocalizations {
       _localizedValues[locale.languageCode]?['collapseTimeline'] ?? '折叠时间轴';
   String get expandTimeline =>
       _localizedValues[locale.languageCode]?['expandTimeline'] ?? '展开时间轴';
+  String get close => _localizedValues[locale.languageCode]?['close'] ?? '关闭';
 
   // 本地化值映射
   static final Map<String, Map<String, String>> _localizedValues = {
@@ -84,6 +85,7 @@ class AppLocalizations {
       'realtimeTranslation': '实时翻译',
       'collapseTimeline': '折叠时间轴',
       'expandTimeline': '展开时间轴',
+      'close': '关闭',
     },
     'en': {
       'appTitle': 'UniSub',
@@ -109,6 +111,7 @@ class AppLocalizations {
       'realtimeTranslation': 'Real-time Translation',
       'collapseTimeline': 'Collapse Timeline',
       'expandTimeline': 'Expand Timeline',
+      'close': 'Close',
     },
     'ja': {
       'appTitle': 'UniSub',
@@ -134,6 +137,7 @@ class AppLocalizations {
       'realtimeTranslation': 'リアルタイム翻訳',
       'collapseTimeline': 'タイムラインを折りたたむ',
       'expandTimeline': 'タイムラインを展開',
+      'close': '閉じる',
     },
   };
 }
