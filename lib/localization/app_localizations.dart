@@ -149,6 +149,11 @@ class _AppLocalizationsDelegate
       'fr',
       'es',
       'pt',
+      'ar',
+      'hi',
+      'bn',
+      'de',
+      'ru',
     ].contains(locale.languageCode);
   }
 

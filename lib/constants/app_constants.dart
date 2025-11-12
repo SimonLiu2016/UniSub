@@ -34,6 +34,11 @@ class AppConstants {
     {'code': 'fr', 'name': 'Français'},
     {'code': 'es', 'name': 'Español'},
     {'code': 'pt', 'name': 'Português'},
+    {'code': 'ar', 'name': 'العربية'},
+    {'code': 'hi', 'name': 'हिन्दी'},
+    {'code': 'bn', 'name': 'বাংলা'},
+    {'code': 'de', 'name': 'Deutsch'},
+    {'code': 'ru', 'name': 'Русский'},
   ];
 
   // 默认设置

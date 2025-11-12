@@ -57,6 +57,21 @@ class _SettingsPageState extends State<SettingsPage> {
       } else {
         _language = 'zh_CN';
       }
+    } else if (languageCode == 'ar') {
+      // 阿拉伯语特殊处理
+      _language = 'ar';
+    } else if (languageCode == 'hi') {
+      // 印地语特殊处理
+      _language = 'hi';
+    } else if (languageCode == 'bn') {
+      // 孟加拉语特殊处理
+      _language = 'bn';
+    } else if (languageCode == 'de') {
+      // 德语特殊处理
+      _language = 'de';
+    } else if (languageCode == 'ru') {
+      // 俄语特殊处理
+      _language = 'ru';
     } else {
       // 对于其他语言，直接使用languageCode
       _language = languageCode;
@@ -444,6 +459,21 @@ class _SettingsPageState extends State<SettingsPage> {
                       break;
                     case 'pt':
                       locale = const Locale('pt');
+                      break;
+                    case 'ar':
+                      locale = const Locale('ar');
+                      break;
+                    case 'hi':
+                      locale = const Locale('hi');
+                      break;
+                    case 'bn':
+                      locale = const Locale('bn');
+                      break;
+                    case 'de':
+                      locale = const Locale('de');
+                      break;
+                    case 'ru':
+                      locale = const Locale('ru');
                       break;
                     default:
                       locale = const Locale('en');

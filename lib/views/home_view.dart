@@ -331,6 +331,21 @@ class _HomeViewState extends State<HomeView> {
                   case 'pt':
                     locale = const Locale('pt');
                     break;
+                  case 'ar':
+                    locale = const Locale('ar');
+                    break;
+                  case 'hi':
+                    locale = const Locale('hi');
+                    break;
+                  case 'bn':
+                    locale = const Locale('bn');
+                    break;
+                  case 'de':
+                    locale = const Locale('de');
+                    break;
+                  case 'ru':
+                    locale = const Locale('ru');
+                    break;
                   default:
                     locale = const Locale('en');
                 }
@@ -346,6 +361,11 @@ class _HomeViewState extends State<HomeView> {
               const PopupMenuItem(value: 'fr', child: Text('Français')),
               const PopupMenuItem(value: 'es', child: Text('Español')),
               const PopupMenuItem(value: 'pt', child: Text('Português')),
+              const PopupMenuItem(value: 'ar', child: Text('العربية')),
+              const PopupMenuItem(value: 'hi', child: Text('हिन्दी')),
+              const PopupMenuItem(value: 'bn', child: Text('বাংলা')),
+              const PopupMenuItem(value: 'de', child: Text('Deutsch')),
+              const PopupMenuItem(value: 'ru', child: Text('Русский')),
             ],
           ),
 

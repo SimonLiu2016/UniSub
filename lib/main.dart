@@ -105,6 +105,11 @@ class _UniSubAppState extends State<UniSubApp> {
         Locale('fr'), // French
         Locale('es'), // Spanish
         Locale('pt'), // Portuguese
+        Locale('ar'), // Arabic
+        Locale('hi'), // Hindi
+        Locale('bn'), // Bengali
+        Locale('de'), // German
+        Locale('ru'), // Russian
       ],
       localeResolutionCallback: (locale, supportedLocales) {
         // 使用当前设置的语言
