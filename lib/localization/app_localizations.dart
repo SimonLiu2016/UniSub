@@ -51,6 +51,12 @@ class AppLocalizations {
   String get network =>
       _localizedValues[locale.languageCode]?['network'] ?? '网络';
   String get cache => _localizedValues[locale.languageCode]?['cache'] ?? '缓存';
+  String get realtimeTranslation =>
+      _localizedValues[locale.languageCode]?['realtimeTranslation'] ?? '实时翻译';
+  String get collapseTimeline =>
+      _localizedValues[locale.languageCode]?['collapseTimeline'] ?? '折叠时间轴';
+  String get expandTimeline =>
+      _localizedValues[locale.languageCode]?['expandTimeline'] ?? '展开时间轴';
 
   // 本地化值映射
   static final Map<String, Map<String, String>> _localizedValues = {
@@ -75,6 +81,9 @@ class AppLocalizations {
       'translation': '翻译',
       'network': '网络',
       'cache': '缓存',
+      'realtimeTranslation': '实时翻译',
+      'collapseTimeline': '折叠时间轴',
+      'expandTimeline': '展开时间轴',
     },
     'en': {
       'appTitle': 'UniSub',
@@ -97,6 +106,9 @@ class AppLocalizations {
       'translation': 'Translation',
       'network': 'Network',
       'cache': 'Cache',
+      'realtimeTranslation': 'Real-time Translation',
+      'collapseTimeline': 'Collapse Timeline',
+      'expandTimeline': 'Expand Timeline',
     },
     'ja': {
       'appTitle': 'UniSub',
@@ -119,6 +131,9 @@ class AppLocalizations {
       'translation': '翻訳',
       'network': 'ネットワーク',
       'cache': 'キャッシュ',
+      'realtimeTranslation': 'リアルタイム翻訳',
+      'collapseTimeline': 'タイムラインを折りたたむ',
+      'expandTimeline': 'タイムラインを展開',
     },
   };
 }

@@ -31,6 +31,15 @@ class TimeUtils {
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
 
+  /// 将秒数格式化为 M:SS 格式 (用于时间轴显示)
+  static String formatTimeMs(double seconds) {
+    final duration = Duration(milliseconds: (seconds * 1000).round());
+    final minutes = duration.inMinutes;
+    final secs = duration.inSeconds.remainder(60);
+
+    return '${minutes}:${secs.toString().padLeft(2, '0')}';
+  }
+
   /// 将 HH:MM:SS,mmm 格式的时间字符串转换为秒数
   static double parseTimeSrt(String timeString) {
     final parts = timeString.split(':');

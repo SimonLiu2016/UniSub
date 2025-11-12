@@ -56,7 +56,11 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           );
         } else {
           // 显示加载指示器
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF007AFF)),
+            ),
+          );
         }
       },
     );

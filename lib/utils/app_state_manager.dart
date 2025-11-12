@@ -8,12 +8,14 @@ class AppStateManager extends ChangeNotifier {
 
   // 应用设置
   String _language = 'zh_TW';
-  String _theme = 'system';
+  String _theme = 'dark'; // 默认深色模式
   String _model = 'medium';
+  bool _realtimeTranslation = false; // 实时翻译开关
 
   // 字幕相关
   bool _isPlaying = false;
   int _currentSubtitleIndex = -1;
+  bool _isTimelineCollapsed = false; // 时间轴折叠状态
 
   // 网络状态
   bool _isOnline = true;
@@ -26,8 +28,10 @@ class AppStateManager extends ChangeNotifier {
   String get language => _language;
   String get theme => _theme;
   String get model => _model;
+  bool get realtimeTranslation => _realtimeTranslation;
   bool get isPlaying => _isPlaying;
   int get currentSubtitleIndex => _currentSubtitleIndex;
+  bool get isTimelineCollapsed => _isTimelineCollapsed;
   bool get isOnline => _isOnline;
   bool get isDownloading => _isDownloading;
 
@@ -62,6 +66,11 @@ class AppStateManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  set realtimeTranslation(bool value) {
+    _realtimeTranslation = value;
+    notifyListeners();
+  }
+
   set isPlaying(bool value) {
     _isPlaying = value;
     notifyListeners();
@@ -69,6 +78,11 @@ class AppStateManager extends ChangeNotifier {
 
   set currentSubtitleIndex(int value) {
     _currentSubtitleIndex = value;
+    notifyListeners();
+  }
+
+  set isTimelineCollapsed(bool value) {
+    _isTimelineCollapsed = value;
     notifyListeners();
   }
 
@@ -108,6 +122,14 @@ class AppStateManager extends ChangeNotifier {
 
   void setCurrentSubtitle(int index) {
     currentSubtitleIndex = index;
+  }
+
+  void toggleTimeline() {
+    isTimelineCollapsed = !isTimelineCollapsed;
+  }
+
+  void toggleRealtimeTranslation() {
+    realtimeTranslation = !realtimeTranslation;
   }
 
   void reset() {

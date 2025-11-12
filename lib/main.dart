@@ -27,17 +27,30 @@ class UniSubApp extends StatelessWidget {
     return MaterialApp(
       title: 'UniSub',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF007AFF),
+          brightness: Brightness.light,
+        ),
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF007AFF),
+          foregroundColor: Colors.white,
+        ),
       ),
       darkTheme: ThemeData(
+        useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
+          seedColor: const Color(0xFF007AFF),
           brightness: Brightness.dark,
         ),
-        useMaterial3: true,
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF1E1E1E),
+          foregroundColor: Colors.white,
+        ),
       ),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark, // 默认深色模式
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

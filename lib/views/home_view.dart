@@ -6,10 +6,12 @@ import '../services/youtube_service.dart';
 import '../utils/file_utils.dart';
 import '../utils/clipboard_utils.dart';
 import '../utils/app_state_manager.dart';
-import '../widgets/processing_progress.dart';
-import '../widgets/drag_drop_area.dart';
-import '../widgets/url_input_field.dart';
-import '../widgets/file_picker_button.dart';
+import '../models/subtitle_segment.dart';
+import '../widgets/video_player.dart';
+import '../widgets/subtitle_player.dart';
+import '../widgets/subtitle_timeline.dart';
+import '../widgets/drag_drop_placeholder.dart';
+import '../widgets/hover_playback_controls.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -22,6 +24,12 @@ class _HomeViewState extends State<HomeView> {
   String? _selectedFilePath;
   String? _videoUrl;
   final TextEditingController _urlController = TextEditingController();
+  late VideoPlayerWidget _videoPlayer;
+  double _videoPosition = 0.0;
+  bool _isPlaying = false;
+  bool _isTimelineCollapsed = false;
+  List<SubtitleSegment> _subtitles = [];
+  int _currentSubtitleIndex = -1;
 
   final AudioService _audioService = AudioService();
   final YoutubeService _youtubeService = YoutubeService();
@@ -30,6 +38,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     _startClipboardMonitoring();
+    _initializeSampleSubtitles();
   }
 
   @override
@@ -37,6 +46,33 @@ class _HomeViewState extends State<HomeView> {
     _urlController.dispose();
     ClipboardUtils.stopClipboardMonitoring();
     super.dispose();
+  }
+
+  void _initializeSampleSubtitles() {
+    // 创建示例字幕数据用于演示
+    _subtitles = [
+      SubtitleSegment(
+        id: 1,
+        startTime: 83.0,
+        endTime: 88.0,
+        text: '今天天氣真好，我們來聊聊 AI 字幕吧～',
+        speaker: '講者1',
+      ),
+      SubtitleSegment(
+        id: 2,
+        startTime: 89.0,
+        endTime: 95.0,
+        text: '對啊！尤其是台灣口音的辨識真的越來越準了！',
+        speaker: '講者2',
+      ),
+      SubtitleSegment(
+        id: 3,
+        startTime: 96.0,
+        endTime: 102.0,
+        text: '而且還能自動區分說話人，超級方便！',
+        speaker: '講者1',
+      ),
+    ];
   }
 
   void _startClipboardMonitoring() {
@@ -71,6 +107,10 @@ class _HomeViewState extends State<HomeView> {
     // 模拟处理过程
     Future.delayed(const Duration(seconds: 3), () {
       appState.finishProcessing();
+      // 处理完成后初始化视频播放器
+      setState(() {
+        _videoPlayer = VideoPlayerWidget(videoPath: filePath);
+      });
     });
   }
 
@@ -96,6 +136,10 @@ class _HomeViewState extends State<HomeView> {
       appState.updateProgress(0.5, '正在转写...');
       Future.delayed(const Duration(seconds: 3), () {
         appState.finishProcessing();
+        // 处理完成后初始化视频播放器
+        setState(() {
+          _videoPlayer = VideoPlayerWidget(videoPath: url);
+        });
       });
     });
   }
@@ -107,28 +151,146 @@ class _HomeViewState extends State<HomeView> {
     }
   }
 
+  void _togglePlayPause() {
+    setState(() {
+      _isPlaying = !_isPlaying;
+    });
+    // 实际的播放/暂停控制需要通过_videoPlayer来实现
+  }
+
+  void _toggleTimeline() {
+    setState(() {
+      _isTimelineCollapsed = !_isTimelineCollapsed;
+    });
+  }
+
+  void _onSubtitleTap(int index) {
+    setState(() {
+      _currentSubtitleIndex = index;
+      // 跳转到对应时间点
+      if (index < _subtitles.length) {
+        _videoPosition = _subtitles[index].startTime;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final appState = Provider.of<AppStateManager>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations.appTitle),
-        actions: [
+      backgroundColor: const Color(0xFF121212), // 深色背景
+      body: Column(
+        children: [
+          // 顶部工具栏
+          _buildTopBar(localizations),
+
+          // 主内容区
+          Expanded(
+            child: appState.isProcessing
+                ? _buildProcessingView(localizations, appState)
+                : _selectedFilePath != null || _videoUrl != null
+                ? _buildPlayerView()
+                : _buildInputView(localizations),
+          ),
+
+          // 底部状态栏
+          _buildStatusBar(appState),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTopBar(AppLocalizations localizations) {
+    return Container(
+      height: 60,
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        border: Border(
+          bottom: BorderSide(color: Colors.grey.withOpacity(0.3), width: 0.5),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Logo
+          const Padding(
+            padding: EdgeInsets.only(left: 16, right: 16),
+            child: Text(
+              'UniSub',
+              style: TextStyle(
+                color: Color(0xFF007AFF),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+
+          // URL输入框
+          Expanded(
+            child: Container(
+              height: 36,
+              margin: const EdgeInsets.only(right: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                controller: _urlController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  hintText: localizations.pasteUrl,
+                  hintStyle: TextStyle(color: Colors.grey.withOpacity(0.7)),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.send, color: Colors.white70),
+                    onPressed: () {
+                      if (_urlController.text.isNotEmpty) {
+                        _onUrlSubmitted(_urlController.text);
+                      }
+                    },
+                  ),
+                ),
+                onSubmitted: _onUrlSubmitted,
+              ),
+            ),
+          ),
+
+          // 实时翻译开关
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(Icons.flash_on, color: Colors.white70),
+            onPressed: () {
+              // TODO: 实现实时翻译开关功能
+            },
+          ),
+
+          // 语言切换
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.language, color: Colors.white70),
+            onSelected: (String language) {
+              // TODO: 实现语言切换功能
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'zh_TW', child: Text('繁體中文')),
+              const PopupMenuItem(value: 'zh_CN', child: Text('简体中文')),
+              const PopupMenuItem(value: 'en', child: Text('English')),
+              const PopupMenuItem(value: 'ja', child: Text('日本語')),
+              const PopupMenuItem(value: 'ko', child: Text('한국어')),
+            ],
+          ),
+
+          // 设置按钮
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white70),
             onPressed: () {
               // 导航到设置页面
               Navigator.pushNamed(context, '/settings');
             },
           ),
+
+          const SizedBox(width: 16),
         ],
-      ),
-      body: Center(
-        child: appState.isProcessing
-            ? _buildProcessingView(localizations, appState)
-            : _buildInputView(localizations),
       ),
     );
   }
@@ -137,40 +299,205 @@ class _HomeViewState extends State<HomeView> {
     AppLocalizations localizations,
     AppStateManager appState,
   ) {
-    return ProcessingProgress(
-      progress: appState.processingProgress,
-      status: appState.processingStatus,
-      detail: _selectedFilePath != null
-          ? localizations.transcribing
-          : localizations.downloadAudio,
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircularProgressIndicator(
+            value: appState.processingProgress,
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF007AFF)),
+            strokeWidth: 6,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            appState.processingStatus,
+            style: const TextStyle(color: Colors.white, fontSize: 18),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _selectedFilePath != null
+                ? localizations.transcribing
+                : localizations.downloadAudio,
+            style: const TextStyle(color: Colors.grey, fontSize: 14),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '${(appState.processingProgress * 100).round()}%',
+            style: const TextStyle(color: Colors.white70, fontSize: 16),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildInputView(AppLocalizations localizations) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+    return Center(
+      child: Container(
+        width: 600,
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // 拖拽区域占位图
+            DragDropPlaceholder(onFileDropped: _onFileSelected),
+            const SizedBox(height: 32),
+            // 文件选择按钮
+            ElevatedButton.icon(
+              onPressed: _pickFile,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF007AFF),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 16,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              icon: const Icon(Icons.file_open, color: Colors.white),
+              label: Text(
+                localizations.selectFile,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPlayerView() {
+    return Column(
+      children: [
+        // 视频播放器区域 (70% 高度)
+        Expanded(
+          flex: 7,
+          child: Stack(
+            children: [
+              // 视频播放器
+              _videoPlayer,
+
+              // 字幕悬浮层
+              SubtitlePlayer(
+                subtitles: _subtitles,
+                videoPosition: _videoPosition,
+                fontFamily: 'NotoSansTC',
+                fontSize: 18.0,
+                position: 'bottom',
+              ),
+
+              // 悬停播放控件
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: HoverPlaybackControls(
+                  isPlaying: _isPlaying,
+                  onPlayPause: _togglePlayPause,
+                  onPrevious: () {
+                    // TODO: 实现跳转到上一个字幕
+                  },
+                  onNext: () {
+                    // TODO: 实现跳转到下一个字幕
+                  },
+                  onFullscreen: () {
+                    // TODO: 实现全屏功能
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // 字幕时间轴面板 (30% 高度，可折叠)
+        Expanded(
+          flex: _isTimelineCollapsed ? 0 : 3,
+          child: Column(
+            children: [
+              // 折叠按钮
+              GestureDetector(
+                onTap: _toggleTimeline,
+                child: Container(
+                  height: 20,
+                  color: Colors.black54,
+                  child: Icon(
+                    _isTimelineCollapsed
+                        ? Icons.arrow_drop_up
+                        : Icons.arrow_drop_down,
+                    color: Colors.white70,
+                  ),
+                ),
+              ),
+
+              // 字幕时间轴
+              if (!_isTimelineCollapsed)
+                Expanded(
+                  child: SubtitleTimeline(
+                    subtitles: _subtitles,
+                    currentSubtitleIndex: _currentSubtitleIndex,
+                    onSubtitleTap: _onSubtitleTap,
+                    onSubtitleEdit: (int index, String text) {
+                      // TODO: 实现字幕编辑功能
+                    },
+                    onSpeakerEdit: (int index, String speaker) {
+                      // TODO: 实现说话人编辑功能
+                    },
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStatusBar(AppStateManager appState) {
+    return Container(
+      height: 40,
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        border: Border(
+          top: BorderSide(color: Colors.grey.withOpacity(0.3), width: 0.5),
+        ),
+      ),
+      child: Row(
         children: [
-          // 拖拽区域
-          DragDropArea(
-            hintText: localizations.dragHint,
-            onFileDropped: _onFileSelected,
+          // 进度指示
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 24,
+            height: 24,
+            child: CircularProgressIndicator(
+              value: appState.isProcessing ? appState.processingProgress : 0,
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                Color(0xFF007AFF),
+              ),
+              strokeWidth: 3,
+            ),
           ),
-          const SizedBox(height: 16),
-          Text(localizations.orText),
-          const SizedBox(height: 16),
-          // 文件选择按钮
-          FilePickerButton(
-            text: localizations.selectFile,
-            onPressed: _pickFile,
+
+          const SizedBox(width: 12),
+
+          // 状态文本
+          Expanded(
+            child: Text(
+              appState.isProcessing ? appState.processingStatus : '就绪',
+              style: const TextStyle(color: Colors.white70, fontSize: 14),
+            ),
           ),
-          const SizedBox(height: 16),
-          // URL输入
-          UrlInputField(
-            hintText: localizations.pasteUrl,
-            onUrlSubmitted: _onUrlSubmitted,
+
+          // 导出按钮
+          TextButton(
+            onPressed: () {
+              // TODO: 实现导出功能
+            },
+            child: const Text(
+              '↓ 匯出 SRT',
+              style: TextStyle(color: Colors.white70, fontSize: 14),
+            ),
           ),
+
+          const SizedBox(width: 16),
         ],
       ),
     );

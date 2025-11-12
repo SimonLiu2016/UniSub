@@ -13,7 +13,7 @@ class SubtitlePlayer extends StatefulWidget {
     required this.subtitles,
     required this.videoPosition,
     this.fontFamily = 'NotoSansTC',
-    this.fontSize = 16.0,
+    this.fontSize = 18.0, // 默认字体大小改为18pt
     this.position = 'bottom',
   });
 
@@ -36,12 +36,12 @@ class _SubtitlePlayerState extends State<SubtitlePlayer> {
       left: 20,
       right: 20,
       top: widget.position == 'top' ? 50 : null,
-      bottom: widget.position == 'bottom' ? 50 : null,
+      bottom: widget.position == 'bottom' ? 100 : null, // 调整到底部100px区域
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: Colors.black54,
-          borderRadius: BorderRadius.circular(4),
+          color: const Color(0x88000000), // 半透明黑底 #00000088
+          borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           '${_currentSubtitle!.speaker}: ${_currentSubtitle!.text}',
@@ -49,7 +49,7 @@ class _SubtitlePlayerState extends State<SubtitlePlayer> {
             fontFamily: widget.fontFamily,
             fontSize: widget.fontSize,
             color: Colors.white,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.normal, // 改为正常字重
           ),
           textAlign: TextAlign.center,
         ),
