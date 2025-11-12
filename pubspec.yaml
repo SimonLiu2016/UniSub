@@ -55,6 +55,7 @@ flutter:
     - assets/models/
     - assets/icons/
     - assets/fonts/
+    - lib/l10n/
 
   # 添加字体
   # fonts:

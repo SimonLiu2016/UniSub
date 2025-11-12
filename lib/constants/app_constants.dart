@@ -26,22 +26,25 @@ class AppConstants {
 
   // 支持的语言
   static const List<Map<String, String>> supportedLanguages = [
-    {'code': 'zh_TW', 'name': '繁體中文'},
     {'code': 'zh_CN', 'name': '简体中文'},
+    {'code': 'zh_TW', 'name': '繁體中文'},
     {'code': 'en', 'name': 'English'},
     {'code': 'ja', 'name': '日本語'},
     {'code': 'ko', 'name': '한국어'},
+    {'code': 'fr', 'name': 'Français'},
+    {'code': 'es', 'name': 'Español'},
+    {'code': 'pt', 'name': 'Português'},
   ];
 
   // 默认设置
-  static const String defaultLanguage = 'zh_TW';
+  static const String defaultLanguage = 'en';
   static const String defaultTheme = 'system';
   static const String defaultModel = 'medium';
   static const String defaultSubtitleFont = 'NotoSansTC';
   static const double defaultSubtitleFontSize = 16.0;
   static const String defaultSubtitleColor = '#FFFFFF';
   static const String defaultSubtitlePosition = 'bottom';
-  static const String defaultTranslateTarget = 'zh_TW';
+  static const String defaultTranslateTarget = 'en';
   static const bool defaultRealtimeTranslation = true;
   static const bool defaultTranslationPostProcessing = true;
   static const bool defaultOnlineVideoSupport = true;

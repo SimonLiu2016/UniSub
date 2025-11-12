@@ -14,7 +14,9 @@ import '../widgets/drag_drop_placeholder.dart';
 import '../widgets/hover_playback_controls.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  final Function(Locale)? onLocaleChanged;
+
+  const HomeView({super.key, this.onLocaleChanged});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -300,13 +302,50 @@ class _HomeViewState extends State<HomeView> {
                   : Colors.black54,
             ),
             onSelected: (String language) {
-              // TODO: 实现语言切换功能
+              // 调用父组件的回调来更新语言
+              if (widget.onLocaleChanged != null) {
+                // 根据语言代码创建对应的Locale对象
+                Locale locale;
+                switch (language) {
+                  case 'zh_CN':
+                    locale = const Locale('zh', 'CN');
+                    break;
+                  case 'zh_TW':
+                    locale = const Locale('zh', 'TW');
+                    break;
+                  case 'en':
+                    locale = const Locale('en');
+                    break;
+                  case 'ja':
+                    locale = const Locale('ja');
+                    break;
+                  case 'ko':
+                    locale = const Locale('ko');
+                    break;
+                  case 'fr':
+                    locale = const Locale('fr');
+                    break;
+                  case 'es':
+                    locale = const Locale('es');
+                    break;
+                  case 'pt':
+                    locale = const Locale('pt');
+                    break;
+                  default:
+                    locale = const Locale('en');
+                }
+                widget.onLocaleChanged!(locale);
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem(value: 'zh_CN', child: Text('简体中文')),
+              const PopupMenuItem(value: 'zh_TW', child: Text('繁體中文')),
               const PopupMenuItem(value: 'en', child: Text('English')),
               const PopupMenuItem(value: 'ja', child: Text('日本語')),
               const PopupMenuItem(value: 'ko', child: Text('한국어')),
+              const PopupMenuItem(value: 'fr', child: Text('Français')),
+              const PopupMenuItem(value: 'es', child: Text('Español')),
+              const PopupMenuItem(value: 'pt', child: Text('Português')),
             ],
           ),
 
@@ -547,7 +586,9 @@ class _HomeViewState extends State<HomeView> {
           // 状态文本
           Expanded(
             child: Text(
-              appState.isProcessing ? appState.processingStatus : '就绪',
+              appState.isProcessing
+                  ? appState.processingStatus
+                  : localizations.ready,
               style: TextStyle(
                 color: theme.brightness == Brightness.dark
                     ? Colors.white70

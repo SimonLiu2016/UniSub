@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class NetworkSettings extends StatefulWidget {
   final bool onlineVideoSupport;
@@ -41,18 +42,23 @@ class _NetworkSettingsState extends State<NetworkSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('网络设置', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              localizations.networkSettings,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // 在线视频支持开关
             SwitchListTile(
-              title: const Text('启用在线视频支持'),
+              title: Text(localizations.onlineVideoSupport),
               value: _onlineVideoSupport,
               onChanged: (value) {
                 setState(() {
@@ -69,10 +75,10 @@ class _NetworkSettingsState extends State<NetworkSettings> {
             const SizedBox(height: 16),
 
             // 下载速度限制
-            const Text('下载速度限制 (KB/s)'),
-            const Text(
-              '0表示无限制',
-              style: TextStyle(fontSize: 12, color: Colors.grey),
+            Text(localizations.downloadSpeedLimit),
+            Text(
+              localizations.noLimit,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
             Slider(
               value: _downloadSpeedLimit.toDouble(),
@@ -80,7 +86,7 @@ class _NetworkSettingsState extends State<NetworkSettings> {
               max: 10000,
               divisions: 100,
               label: _downloadSpeedLimit == 0
-                  ? '无限制'
+                  ? localizations.noLimit
                   : '${_downloadSpeedLimit}KB/s',
               onChanged: (value) {
                 setState(() {
@@ -97,12 +103,12 @@ class _NetworkSettingsState extends State<NetworkSettings> {
             const SizedBox(height: 16),
 
             // 代理服务器设置
-            const Text('代理服务器'),
+            Text(localizations.proxyServer),
             TextField(
               controller: _proxyController,
-              decoration: const InputDecoration(
-                hintText: '例如: http://proxy.example.com:8080',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                hintText: localizations.proxyServerHint,
+                border: const OutlineInputBorder(),
               ),
               onChanged: (value) {
                 setState(() {

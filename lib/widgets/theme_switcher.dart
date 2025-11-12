@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class ThemeSwitcher extends StatelessWidget {
   final String selectedTheme;
@@ -12,6 +13,7 @@ class ThemeSwitcher extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
     return Container(
@@ -24,10 +26,16 @@ class ThemeSwitcher extends StatelessWidget {
       ),
       child: DropdownButton<String>(
         value: selectedTheme,
-        items: const [
-          DropdownMenuItem(value: 'system', child: Text('跟随系统')),
-          DropdownMenuItem(value: 'light', child: Text('浅色')),
-          DropdownMenuItem(value: 'dark', child: Text('深色')),
+        items: [
+          DropdownMenuItem(
+            value: 'system',
+            child: Text(localizations.systemTheme),
+          ),
+          DropdownMenuItem(
+            value: 'light',
+            child: Text(localizations.lightTheme),
+          ),
+          DropdownMenuItem(value: 'dark', child: Text(localizations.darkTheme)),
         ],
         onChanged: (value) {
           if (value != null) {

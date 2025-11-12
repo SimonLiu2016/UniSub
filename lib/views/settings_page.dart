@@ -10,7 +10,9 @@ import '../widgets/cache_settings.dart';
 import '../widgets/hotkey_settings.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final Function(Locale)? onLocaleChanged;
+
+  const SettingsPage({super.key, this.onLocaleChanged});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -35,6 +37,31 @@ class _SettingsPageState extends State<SettingsPage> {
   String _globalHotkey = 'Cmd+Shift+S';
   String _proxyServer = '';
   String _cachePath = '~/Library/Caches/UniSub';
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // 根据当前的locale更新_language变量
+    _updateLanguageFromLocale();
+  }
+
+  void _updateLanguageFromLocale() {
+    final locale = Localizations.localeOf(context);
+    String languageCode = locale.languageCode;
+    String countryCode = locale.countryCode ?? '';
+
+    // 根据locale设置_language变量
+    if (languageCode == 'zh') {
+      if (countryCode == 'TW') {
+        _language = 'zh_TW';
+      } else {
+        _language = 'zh_CN';
+      }
+    } else {
+      // 对于其他语言，直接使用languageCode
+      _language = languageCode;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +89,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.language,
                       title: localizations.language,
-                      description: '设置应用显示语言',
+                      description: localizations.languageSettingDescription,
                       onTap: () =>
                           _showLanguageSettingsDialog(context, localizations),
                     ),
@@ -73,8 +100,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildSettingsMenuItem(
                       context: context,
                       icon: Icons.brightness_6,
-                      title: '主题',
-                      description: '设置应用主题样式',
+                      title: localizations.theme,
+                      description: localizations.themeDescription,
                       onTap: () =>
                           _showThemeSettingsDialog(context, localizations),
                     ),
@@ -86,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.model_training,
                       title: localizations.model,
-                      description: '设置语音识别模型',
+                      description: localizations.modelSettingDescription,
                       onTap: () =>
                           _showModelSettingsDialog(context, localizations),
                     ),
@@ -98,7 +125,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.subtitles,
                       title: localizations.subtitle,
-                      description: '设置字幕显示样式',
+                      description: localizations.subtitleSettingDescription,
                       onTap: () =>
                           _showSubtitleSettingsDialog(context, localizations),
                     ),
@@ -110,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.translate,
                       title: localizations.translation,
-                      description: '设置翻译相关选项',
+                      description: localizations.translationSettingDescription,
                       onTap: () => _showTranslationSettingsDialog(
                         context,
                         localizations,
@@ -124,7 +151,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.network_wifi,
                       title: localizations.network,
-                      description: '设置网络连接选项',
+                      description: localizations.networkSettingDescription,
                       onTap: () =>
                           _showNetworkSettingsDialog(context, localizations),
                     ),
@@ -136,7 +163,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       context: context,
                       icon: Icons.storage,
                       title: localizations.cache,
-                      description: '管理应用缓存文件',
+                      description: localizations.cacheSettingDescription,
                       onTap: () =>
                           _showCacheSettingsDialog(context, localizations),
                     ),
@@ -147,8 +174,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     _buildSettingsMenuItem(
                       context: context,
                       icon: Icons.keyboard,
-                      title: '全局热键',
-                      description: '设置全局快捷键',
+                      title: localizations.globalHotkey,
+                      description: localizations.globalHotkeyDescription,
                       onTap: () =>
                           _showHotkeySettingsDialog(context, localizations),
                     ),
@@ -293,18 +320,26 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildSubtitleSettings() {
+    final localizations = AppLocalizations.of(context);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 字体设置
-        const Text('字体'),
+        Text(localizations.font),
         const SizedBox(height: 8),
         DropdownButton<String>(
           value: _subtitleFont,
-          items: const [
-            DropdownMenuItem(value: 'NotoSansTC', child: Text('思源黑体')),
-            DropdownMenuItem(value: 'PingFang', child: Text('苹方')),
-            DropdownMenuItem(value: 'Arial', child: Text('Arial')),
+          items: [
+            DropdownMenuItem(
+              value: 'NotoSansTC',
+              child: Text(localizations.notoSansTC),
+            ),
+            DropdownMenuItem(
+              value: 'PingFang',
+              child: Text(localizations.pingFang),
+            ),
+            const DropdownMenuItem(value: 'Arial', child: Text('Arial')),
           ],
           onChanged: (value) {
             if (value != null) {
@@ -317,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage> {
         const SizedBox(height: 20),
 
         // 字体大小
-        const Text('字体大小'),
+        Text(localizations.fontSize),
         const SizedBox(height: 8),
         Slider(
           value: _subtitleFontSize,
@@ -334,13 +369,16 @@ class _SettingsPageState extends State<SettingsPage> {
         const SizedBox(height: 20),
 
         // 字幕位置
-        const Text('位置'),
+        Text(localizations.position),
         const SizedBox(height: 8),
         DropdownButton<String>(
           value: _subtitlePosition,
-          items: const [
-            DropdownMenuItem(value: 'top', child: Text('顶部')),
-            DropdownMenuItem(value: 'bottom', child: Text('底部')),
+          items: [
+            DropdownMenuItem(value: 'top', child: Text(localizations.top)),
+            DropdownMenuItem(
+              value: 'bottom',
+              child: Text(localizations.bottom),
+            ),
           ],
           onChanged: (value) {
             if (value != null) {
@@ -355,9 +393,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   void _clearCache() {
     // 清理缓存的实现
+    final localizations = AppLocalizations.of(context);
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('缓存已清理')));
+    ).showSnackBar(SnackBar(content: Text(localizations.clearCache)));
   }
 
   void _showLanguageSettingsDialog(
@@ -377,6 +416,40 @@ class _SettingsPageState extends State<SettingsPage> {
               selectedLanguage: _language,
               onLanguageChanged: (value) {
                 setState(() => _language = value);
+                // 调用父组件的回调来更新语言
+                if (widget.onLocaleChanged != null) {
+                  // 根据语言代码创建对应的Locale对象
+                  Locale locale;
+                  switch (value) {
+                    case 'zh_CN':
+                      locale = const Locale('zh', 'CN');
+                      break;
+                    case 'zh_TW':
+                      locale = const Locale('zh', 'TW');
+                      break;
+                    case 'en':
+                      locale = const Locale('en');
+                      break;
+                    case 'ja':
+                      locale = const Locale('ja');
+                      break;
+                    case 'ko':
+                      locale = const Locale('ko');
+                      break;
+                    case 'fr':
+                      locale = const Locale('fr');
+                      break;
+                    case 'es':
+                      locale = const Locale('es');
+                      break;
+                    case 'pt':
+                      locale = const Locale('pt');
+                      break;
+                    default:
+                      locale = const Locale('en');
+                  }
+                  widget.onLocaleChanged!(locale);
+                }
                 Navigator.of(context).pop();
               },
               languages: AppConstants.supportedLanguages,
@@ -409,7 +482,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('主题设置'),
+          title: Text(localizations.themeSettings),
           content: SizedBox(
             width: 400,
             child: ThemeSwitcher(
@@ -643,7 +716,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('全局热键'),
+          title: Text(localizations.globalHotkey),
           content: SizedBox(
             width: 400,
             child: HotkeySettings(

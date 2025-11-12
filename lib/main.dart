@@ -8,6 +8,7 @@ import 'views/model_manager_view.dart';
 import 'utils/notification_utils.dart';
 import 'utils/app_state_manager.dart';
 import 'utils/system_tray.dart';
+import 'constants/app_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,13 +22,27 @@ void main() async {
   );
 }
 
-class UniSubApp extends StatelessWidget {
+class UniSubApp extends StatefulWidget {
   const UniSubApp({super.key});
+
+  @override
+  State<UniSubApp> createState() => _UniSubAppState();
+}
+
+class _UniSubAppState extends State<UniSubApp> {
+  Locale _locale = const Locale('en');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'UniSub',
+      locale: _locale,
       theme: ThemeData(
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
@@ -83,17 +98,21 @@ class UniSubApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('zh', 'CN'), // Simplified Chinese
+        Locale('zh', 'TW'), // Traditional Chinese
         Locale('en'), // English
         Locale('ja'), // Japanese
         Locale('ko'), // Korean
+        Locale('fr'), // French
+        Locale('es'), // Spanish
+        Locale('pt'), // Portuguese
       ],
       localeResolutionCallback: (locale, supportedLocales) {
-        // 默认使用英文
-        return const Locale('en');
+        // 使用当前设置的语言
+        return _locale;
       },
-      home: const HomeView(),
+      home: HomeView(onLocaleChanged: setLocale),
       routes: {
-        '/settings': (context) => const SettingsPage(),
+        '/settings': (context) => SettingsPage(onLocaleChanged: setLocale),
         '/models': (context) => const ModelManagerView(),
       },
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class CacheSettings extends StatefulWidget {
   final int cacheCleanupPeriod;
@@ -29,24 +30,32 @@ class _CacheSettingsState extends State<CacheSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('缓存设置', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              localizations.cacheSettings,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // 自动清理周期
-            const Text('自动清理周期'),
-            const Text('天', style: TextStyle(fontSize: 12, color: Colors.grey)),
+            Text(localizations.autoCleanupPeriod),
+            Text(
+              localizations.days,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
             Slider(
               value: _cacheCleanupPeriod.toDouble(),
               min: 1,
               max: 30,
               divisions: 29,
-              label: '${_cacheCleanupPeriod}天',
+              label: '${_cacheCleanupPeriod}${localizations.days}',
               onChanged: (value) {
                 setState(() {
                   _cacheCleanupPeriod = value.toInt();
@@ -58,7 +67,7 @@ class _CacheSettingsState extends State<CacheSettings> {
             const SizedBox(height: 16),
 
             // 缓存路径显示
-            const Text('缓存路径'),
+            Text(localizations.cachePath),
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -76,7 +85,7 @@ class _CacheSettingsState extends State<CacheSettings> {
             // 清理缓存按钮
             ElevatedButton(
               onPressed: widget.onClearCache,
-              child: const Text('清理缓存'),
+              child: Text(localizations.clearCacheButton),
             ),
           ],
         ),

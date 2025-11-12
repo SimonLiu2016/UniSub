@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class HotkeySettings extends StatefulWidget {
   final String globalHotkey;
@@ -25,17 +26,22 @@ class _HotkeySettingsState extends State<HotkeySettings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('全局热键', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              localizations.hotkeySettings,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // 快速打开应用热键
-            const Text('快速打开应用'),
+            Text(localizations.quickOpenApp),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -43,12 +49,12 @@ class _HotkeySettingsState extends State<HotkeySettings> {
                 const SizedBox(width: 16),
                 ElevatedButton(
                   onPressed: _showHotkeyDialog,
-                  child: const Text('设置'),
+                  child: Text(localizations.setHotkey),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _useDefaultHotkey,
-                  child: const Text('使用默认'),
+                  child: Text(localizations.useDefault),
                 ),
               ],
             ),
@@ -59,18 +65,20 @@ class _HotkeySettingsState extends State<HotkeySettings> {
   }
 
   void _showHotkeyDialog() {
+    final localizations = AppLocalizations.of(context);
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('设置全局热键'),
-          content: const Text('请按下您想要设置的热键组合'),
+          title: Text(localizations.setGlobalHotkey),
+          content: Text(localizations.pressDesiredHotkey),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('取消'),
+              child: Text(localizations.cancel),
             ),
           ],
         );

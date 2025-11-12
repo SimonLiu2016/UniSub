@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../localization/app_localizations.dart';
 
 class TranslationSettings extends StatefulWidget {
   final String targetLanguage;
@@ -35,17 +36,22 @@ class _TranslationSettingsState extends State<TranslationSettings> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('翻译设置', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              localizations.translationSettings,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             const SizedBox(height: 16),
 
             // 目标语言选择
-            const Text('目标语言'),
+            Text(localizations.targetLanguage),
             DropdownButton<String>(
               value: _targetLanguage,
               items: widget.languages.map((language) {
@@ -72,7 +78,7 @@ class _TranslationSettingsState extends State<TranslationSettings> {
 
             // 实时翻译开关
             SwitchListTile(
-              title: const Text('实时翻译'),
+              title: Text(localizations.realtimeTranslation),
               value: _realtimeTranslation,
               onChanged: (value) {
                 setState(() {
@@ -90,7 +96,7 @@ class _TranslationSettingsState extends State<TranslationSettings> {
 
             // 翻译后处理开关
             SwitchListTile(
-              title: const Text('翻译后处理'),
+              title: Text(localizations.translationPostProcessing),
               value: _postProcessing,
               onChanged: (value) {
                 setState(() {
