@@ -4,6 +4,7 @@ import 'package:path_provider/path_provider.dart';
 
 class AudioService {
   static const String _tempDirName = 'temp';
+  static const String _audioDirName = 'audio';
 
   /// 获取临时目录路径
   Future<Directory> getTempDirectory() async {
@@ -13,6 +14,16 @@ class AudioService {
       await appTempDir.create(recursive: true);
     }
     return appTempDir;
+  }
+
+  /// 获取音频文件目录路径
+  Future<Directory> getAudioDirectory() async {
+    final tempDir = await getTemporaryDirectory();
+    final audioDir = Directory(path.join(tempDir.path, _audioDirName));
+    if (!await audioDir.exists()) {
+      await audioDir.create(recursive: true);
+    }
+    return audioDir;
   }
 
   /// 保存音频文件到临时目录

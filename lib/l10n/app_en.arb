@@ -67,5 +67,6 @@
   "setGlobalHotkey": "Set Global Hotkey",
   "pressDesiredHotkey": "Please press the hotkey combination you want to set",
   "cancel": "Cancel",
-  "ready": "Ready"
+  "ready": "Ready",
+  "ytDlpRequired": "yt-dlp Required"
 }

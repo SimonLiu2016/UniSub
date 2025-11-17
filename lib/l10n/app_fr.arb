@@ -1,7 +1,7 @@
 {
   "@@locale": "fr",
   "appTitle": "UniSub",
-  "dragHint": "Faites glisser des fichiers vidéo ou audio ici",
+  "dragHint": "Glissez les fichiers vidéo ou audio ici",
   "orText": "ou",
   "selectFile": "Sélectionner un fichier",
   "pasteUrl": "Coller l'URL de la vidéo",
@@ -54,7 +54,7 @@
   "downloadSpeedLimit": "Limite de vitesse de téléchargement (KB/s)",
   "noLimit": "Pas de limite",
   "proxyServer": "Serveur proxy",
-  "proxyServerHint": "ex: http://proxy.example.com:8080",
+  "proxyServerHint": "ex. : http://proxy.example.com:8080",
   "cacheSettings": "Paramètres du cache",
   "autoCleanupPeriod": "Période de nettoyage automatique",
   "days": "Jours",
@@ -67,5 +67,6 @@
   "setGlobalHotkey": "Définir le raccourci global",
   "pressDesiredHotkey": "Veuillez appuyer sur la combinaison de touches souhaitée",
   "cancel": "Annuler",
-  "ready": "Prêt"
+  "ready": "Prêt",
+  "ytDlpRequired": "yt-dlp requis"
 }

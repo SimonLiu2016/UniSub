@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+// import 'package:file_picker/file_picker.dart'; // 未使用的导入
 import '../localization/app_localizations.dart';
-import '../services/audio_service.dart';
 import '../services/youtube_service.dart';
+// import '../services/audio_service.dart'; // 未使用的导入
+import '../utils/app_state_manager.dart';
 import '../utils/file_utils.dart';
 import '../utils/clipboard_utils.dart';
-import '../utils/app_state_manager.dart';
 import '../models/subtitle_segment.dart';
+import '../widgets/drag_drop_placeholder.dart';
 import '../widgets/video_player.dart';
 import '../widgets/subtitle_player.dart';
 import '../widgets/subtitle_timeline.dart';
-import '../widgets/drag_drop_placeholder.dart';
 import '../widgets/hover_playback_controls.dart';
+// import '../services/video_detector.dart'; // 未使用的导入
 
 class HomeView extends StatefulWidget {
   final Function(Locale)? onLocaleChanged;
@@ -26,15 +28,15 @@ class _HomeViewState extends State<HomeView> {
   String? _selectedFilePath;
   String? _videoUrl;
   final TextEditingController _urlController = TextEditingController();
-  late VideoPlayerWidget _videoPlayer;
+  VideoPlayerWidget? _videoPlayer; // 改为可空类型，移除late
   double _videoPosition = 0.0;
   bool _isPlaying = false;
   bool _isTimelineCollapsed = false;
   List<SubtitleSegment> _subtitles = [];
   int _currentSubtitleIndex = -1;
 
-  final AudioService _audioService = AudioService();
-  final YoutubeService _youtubeService = YoutubeService();
+  // final AudioService _audioService = AudioService(); // 未使用的字段
+  final VideoService _videoService = VideoService(); // 新的视频服务
 
   @override
   void initState() {
@@ -117,8 +119,7 @@ class _HomeViewState extends State<HomeView> {
   }
 
   void _onUrlSubmitted(String url) {
-    if (!_youtubeService.isValidYoutubeUrl(url) &&
-        !_youtubeService.isValidBilibiliUrl(url)) {
+    if (!_videoService.isSupportedPlatform(url)) {
       // 显示错误提示
       ScaffoldMessenger.of(
         context,
@@ -127,23 +128,74 @@ class _HomeViewState extends State<HomeView> {
     }
 
     final appState = Provider.of<AppStateManager>(context, listen: false);
-    appState.startProcessing('正在下载音频...');
+    appState.startProcessing('正在解析视频信息...');
 
     setState(() {
       _videoUrl = url;
     });
 
-    // 模拟处理过程
-    Future.delayed(const Duration(seconds: 3), () {
-      appState.updateProgress(0.5, '正在转写...');
-      Future.delayed(const Duration(seconds: 3), () {
-        appState.finishProcessing();
-        // 处理完成后初始化视频播放器
-        setState(() {
-          _videoPlayer = VideoPlayerWidget(videoPath: url);
-        });
+    // 启动处理流程
+    _processVideoUrl(url, appState);
+  }
+
+  /// 处理视频URL的完整流程
+  Future<void> _processVideoUrl(String url, AppStateManager appState) async {
+    try {
+      debugPrint('开始处理视频URL: $url');
+
+      // 1. 获取视频信息
+      appState.updateProgress(0.1, '正在获取视频信息...');
+      final videoInfo = await _videoService.getVideoInfo(url);
+      debugPrint('获取视频信息成功: $videoInfo');
+
+      // 2. 下载音频
+      appState.updateProgress(0.2, '正在下载音频...');
+      final videoPath = await _videoService.downloadVideo(url, (
+        progress,
+        status,
+      ) {
+        // 更新进度
+        final adjustedProgress = 0.2 + (progress * 0.6); // 20%到80%的范围
+        appState.updateProgress(adjustedProgress, status);
+        debugPrint('下载进度: $progress, 状态: $status');
       });
-    });
+      debugPrint('视频下载成功，路径: $videoPath');
+
+      // 3. 转写音频
+      appState.updateProgress(0.8, '正在转写音频...');
+      await Future.delayed(const Duration(seconds: 2)); // 模拟转写过程
+      debugPrint('音频转写完成');
+
+      // 4. 完成处理
+      appState.finishProcessing();
+      debugPrint('处理流程完成');
+
+      // 处理完成后初始化视频播放器
+      setState(() {
+        _videoPlayer = VideoPlayerWidget(videoPath: videoPath);
+      });
+    } catch (e) {
+      debugPrint('处理视频URL时发生错误: $e');
+
+      // 处理错误
+      appState.finishProcessing();
+
+      // 重置进度为0，表示处理失败
+      appState.updateProgress(0.0, '处理失败');
+
+      String errorMessage = e.toString();
+
+      // 提供更友好的错误提示
+      if (errorMessage.contains('执行失败')) {
+        errorMessage = '视频处理失败: ${errorMessage.replaceAll('Exception:', '')}';
+      }
+
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('处理失败: $errorMessage')));
+      }
+    }
   }
 
   Future<void> _pickFile() async {
@@ -242,7 +294,7 @@ class _HomeViewState extends State<HomeView> {
               height: 36,
               margin: const EdgeInsets.only(right: 16),
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceVariant,
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(18),
               ),
               child: TextField(
@@ -495,7 +547,7 @@ class _HomeViewState extends State<HomeView> {
           child: Stack(
             children: [
               // 视频播放器
-              _videoPlayer,
+              if (_videoPlayer != null) _videoPlayer! else Container(),
 
               // 字幕悬浮层
               SubtitlePlayer(
@@ -639,4 +691,51 @@ class _HomeViewState extends State<HomeView> {
       ),
     );
   }
+
+  /// 处理URL输入
+  // Future<void> _handleUrlInput(String url) async {
+  //   final appState = Provider.of<AppStateManager>(context, listen: false);
+  //   appState.startProcessing('正在处理URL...');
+  //
+  //   try {
+  //     // 首先检测URL对应的页面是否有视频
+  //     appState.updateProgress(0.05, '正在检测页面视频内容...');
+  //     final videoInfo = await VideoDetector.getVideoInfo(url);
+  //
+  //     if (!videoInfo['hasVideo']) {
+  //       // 如果没有检测到视频，显示错误信息
+  //       appState.finishProcessing();
+  //       appState.updateProgress(0.0, '未检测到视频内容');
+  //
+  //       if (mounted) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(
+  //             content: Text('未在页面中检测到视频内容: ${videoInfo['error'] ?? '未知错误'}'),
+  //           ),
+  //         );
+  //       }
+  //       return;
+  //     }
+  //
+  //     // 如果检测到视频，继续处理
+  //     debugPrint('检测到视频内容: ${videoInfo['title']}');
+  //     appState.updateProgress(0.1, '检测到视频内容，开始处理...');
+  //
+  //     // 延迟一小段时间让用户看到检测结果
+  //     await Future.delayed(const Duration(milliseconds: 500));
+  //
+  //     // 继续处理视频URL
+  //     await _processVideoUrl(url, appState);
+  //   } catch (e) {
+  //     debugPrint('处理URL输入时发生错误: $e');
+  //     appState.finishProcessing();
+  //     appState.updateProgress(0.0, '处理失败');
+  //
+  //     if (mounted) {
+  //       ScaffoldMessenger.of(
+  //         context,
+  //       ).showSnackBar(SnackBar(content: Text('处理失败: $e')));
+  //     }
+  //   }
+  // }
 }

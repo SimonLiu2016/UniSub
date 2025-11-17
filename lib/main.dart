@@ -14,6 +14,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await NotificationUtils.initialize();
   await SystemTray.initialize(); // 初始化系统托盘
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AppStateManager(),

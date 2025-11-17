@@ -33,7 +33,7 @@
   "subtitleSettingDescription": "Установить стиль отображения субтитров",
   "translationSettingDescription": "Установить параметры перевода",
   "networkSettingDescription": "Установить параметры сетевого подключения",
-  "cacheSettingDescription": "Управление файлами кэша приложения",
+  "cacheSettingDescription": "Управлять файлами кэша приложения",
   "themeSettings": "Настройки темы",
   "font": "Шрифт",
   "fontSize": "Размер шрифта",
@@ -51,7 +51,7 @@
   "translationPostProcessing": "Постобработка перевода",
   "networkSettings": "Настройки сети",
   "onlineVideoSupport": "Включить поддержку онлайн видео",
-  "downloadSpeedLimit": "Ограничение скорости загрузки (КБ/с)",
+  "downloadSpeedLimit": "Ограничение скорости загрузки (KB/s)",
   "noLimit": "Без ограничений",
   "proxyServer": "Прокси сервер",
   "proxyServerHint": "например: http://proxy.example.com:8080",
@@ -61,11 +61,12 @@
   "cachePath": "Путь к кэшу",
   "clearCacheButton": "Очистить кэш",
   "hotkeySettings": "Глобальная горячая клавиша",
-  "quickOpenApp": "Быстрый запуск приложения",
+  "quickOpenApp": "Быстрое открытие приложения",
   "setHotkey": "Установить",
   "useDefault": "Использовать по умолчанию",
   "setGlobalHotkey": "Установить глобальную горячую клавишу",
-  "pressDesiredHotkey": "Пожалуйста, нажмите комбинацию клавиш, которую вы хотите установить",
+  "pressDesiredHotkey": "Пожалуйста, нажмите желаемую комбинацию клавиш",
   "cancel": "Отмена",
-  "ready": "Готов"
+  "ready": "Готов",
+  "ytDlpRequired": "Требуется yt-dlp"
 }

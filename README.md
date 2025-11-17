@@ -19,6 +19,39 @@ UniSub 是一款全离线优先 + 在线视频兼容的原生 AI 字幕生成工
 - FFI (本地库调用)
 - i18n (国际化)
 
+## 安装要求
+
+### 系统要求
+
+- macOS 10.15 或更高版本
+
+### 依赖项
+
+- yt-dlp: 用于在线视频音频提取
+- Homebrew (推荐): 用于简化依赖安装
+
+### 安装 yt-dlp
+
+#### 使用 Homebrew (推荐)
+
+```bash
+# 安装 Homebrew (如果尚未安装)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# 安装 yt-dlp
+brew install yt-dlp
+```
+
+#### 使用 pip
+
+```bash
+pip install yt-dlp
+```
+
+#### 手动下载
+
+访问 [yt-dlp GitHub releases](https://github.com/yt-dlp/yt-dlp/releases) 下载最新版本
+
 ## 功能模块
 
 ### 1. 输入支持模块
@@ -80,80 +113,6 @@ UniSub 是一款全离线优先 + 在线视频兼容的原生 AI 字幕生成工
 - 支持语言 (zh-TW, zh-CN, en, ja, ko)
 - 动态切换
 - 系统跟随
-
-### 9. macOS 原生集成模块
-
-- 菜单栏集成
-- Touch Bar 支持
-- 系统通知
-- 深色模式
-- 全局热键
-
-### 10. 模型管理模块
-
-- 按需下载
-- 模型切换
-- 存储路径
-
-## 系统要求
-
-- macOS 12+ (Apple Silicon & Intel 双架构)
-- 8GB RAM (推荐)
-- 2GB 可用磁盘空间 (用于模型下载)
-
-## 安装
-
-### 从 App Store 安装
-
-1. 打开 App Store
-2. 搜索 "UniSub"
-3. 点击 "获取" 安装
-
-### 从官网下载
-
-1. 访问 https://unisub.app
-2. 下载 .dmg 安装包
-3. 双击安装包并拖拽到 Applications 文件夹
-
-## 使用方法
-
-1. **本地文件处理**:
-
-   - 拖拽视频/音频文件到应用窗口
-   - 或点击 "选择文件" 按钮
-
-2. **在线视频处理**:
-
-   - 复制 YouTube/Bilibili 等平台视频链接
-   - 粘贴到 URL 输入框并回车
-
-3. **字幕编辑**:
-
-   - 在播放界面点击字幕进行编辑
-   - 可修改说话人标签和字幕内容
-
-4. **导出字幕**:
-   - 点击导出按钮选择格式
-   - 支持 SRT、VTT、ASS 格式
-
-## 隐私政策
-
-UniSub 采用全离线处理模式，所有音频处理和字幕生成均在本地完成，不会上传任何用户数据到服务器。
-
-## 支持的平台
-
-- YouTube
-- Bilibili
-- X (Twitter)
-- TikTok
-- Instagram
-- Facebook
-
-## 联系我们
-
-- 官网: https://unisub.app
-- 邮箱: support@unisub.app
-- GitHub: https://github.com/unisub/unisub
 
 ## 许可证
 

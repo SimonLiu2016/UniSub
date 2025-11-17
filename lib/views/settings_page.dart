@@ -4,10 +4,12 @@ import '../constants/app_constants.dart';
 import '../widgets/language_selector.dart';
 import '../widgets/theme_switcher.dart';
 import '../widgets/model_selector.dart';
+import '../widgets/subtitle_style_settings.dart';
 import '../widgets/translation_settings.dart';
 import '../widgets/network_settings.dart';
 import '../widgets/cache_settings.dart';
 import '../widgets/hotkey_settings.dart';
+import '../services/audio_service.dart'; // 导入音频服务
 
 class SettingsPage extends StatefulWidget {
   final Function(Locale)? onLocaleChanged;
@@ -37,6 +39,7 @@ class _SettingsPageState extends State<SettingsPage> {
   String _globalHotkey = 'Cmd+Shift+S';
   String _proxyServer = '';
   String _cachePath = '~/Library/Caches/UniSub';
+  final AudioService _audioService = AudioService(); // 添加音频服务
 
   @override
   void didChangeDependencies() {
@@ -710,6 +713,7 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text(localizations.cache),
           content: SizedBox(
             width: 400,
+            height: 400, // 增加高度以适应内容
             child: CacheSettings(
               cacheCleanupPeriod: _cacheCleanupPeriod,
               cachePath: _cachePath,
@@ -717,6 +721,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 setState(() => _cacheCleanupPeriod = value);
               },
               onClearCache: _clearCache,
+              audioService: _audioService, // 传递音频服务
             ),
           ),
           actions: [

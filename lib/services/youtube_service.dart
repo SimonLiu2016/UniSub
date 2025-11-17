@@ -1,56 +1,66 @@
-import 'dart:io';
-import 'package:path/path.dart' as path;
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
+import '../platform/platform_manager.dart';
 
-class YoutubeService {
-  static const String _tempDirName = 'temp';
+/// 视频服务类，使用新的平台管理器架构
+class VideoService {
+  final PlatformManager _platformManager = PlatformManager();
 
-  /// 检查URL是否为有效的YouTube链接
-  bool isValidYoutubeUrl(String url) {
-    final youtubeRegex = RegExp(
-      r'^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+',
-      caseSensitive: false,
-    );
-    return youtubeRegex.hasMatch(url);
-  }
+  /// 支持的平台列表
+  static const List<String> supportedPlatforms = [
+    'youtube',
+    'bilibili',
+    'x', // Twitter
+    'tiktok',
+    'instagram',
+    'facebook',
+  ];
 
-  /// 检查URL是否为有效的Bilibili链接
-  bool isValidBilibiliUrl(String url) {
-    final bilibiliRegex = RegExp(
-      r'^(https?:\/\/)?(www\.)?(bilibili\.com)\/.+',
-      caseSensitive: false,
-    );
-    return bilibiliRegex.hasMatch(url);
+  /// 检查URL是否为支持的平台链接
+  bool isSupportedPlatform(String url) {
+    return _platformManager.getPlatformForUrl(url) != null;
   }
 
   /// 获取视频平台类型
   String getPlatformType(String url) {
-    if (isValidYoutubeUrl(url)) {
-      return 'youtube';
-    } else if (isValidBilibiliUrl(url)) {
-      return 'bilibili';
-    } else {
-      return 'unknown';
+    final platform = _platformManager.getPlatformForUrl(url);
+    return platform?.platformName ?? 'unknown';
+  }
+
+  /// 下载视频
+  Future<String> downloadVideo(
+    String videoUrl,
+    Function(double, String) onProgress,
+  ) async {
+    try {
+      return await _platformManager.downloadVideo(videoUrl, (
+        double progress,
+        String status,
+      ) {
+        onProgress(progress, status);
+      });
+    } catch (e) {
+      debugPrint('视频下载失败: $e');
+      rethrow;
     }
   }
 
-  /// 模拟下载音频（实际实现需要集成yt-dlp）
-  Future<String> downloadAudio(String videoUrl) async {
-    // 这里应该是调用yt-dlp的实际实现
-    // 暂时返回一个模拟的文件路径
-    final tempDir = await getTemporaryDirectory();
-    final appTempDir = Directory(path.join(tempDir.path, _tempDirName));
-    if (!await appTempDir.exists()) {
-      await appTempDir.create(recursive: true);
+  /// 获取视频信息
+  Future<Map<String, dynamic>> getVideoInfo(String videoUrl) async {
+    try {
+      return await _platformManager.getVideoInfo(videoUrl);
+    } catch (e) {
+      debugPrint('获取视频信息失败: $e');
+      rethrow;
     }
+  }
 
-    final fileName = 'sample_audio.mp3';
-    final filePath = path.join(appTempDir.path, fileName);
-
-    // 创建一个模拟的音频文件
-    final file = File(filePath);
-    await file.writeAsString('Sample audio content');
-
-    return filePath;
+  /// 取消当前下载
+  Future<void> cancelDownload(String videoUrl) async {
+    try {
+      await _platformManager.cancelDownload(videoUrl);
+    } catch (e) {
+      debugPrint('取消下载失败: $e');
+      rethrow;
+    }
   }
 }

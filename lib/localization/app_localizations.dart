@@ -133,6 +133,8 @@ class AppLocalizations {
 
   // 状态栏相关
   String get ready => _localizedStrings['ready'] ?? '就绪';
+  String get ytDlpRequired =>
+      _localizedStrings['ytDlpRequired'] ?? '需要安装 yt-dlp';
 }
 
 class _AppLocalizationsDelegate

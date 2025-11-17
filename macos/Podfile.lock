@@ -9,6 +9,10 @@ PODS:
     - FlutterMacOS
   - share_plus (0.0.1):
     - FlutterMacOS
+  - unisub_video_processing (0.0.1):
+    - FlutterMacOS
+  - url_launcher_macos (0.0.1):
+    - FlutterMacOS
   - video_player_macos (0.0.1):
     - FlutterMacOS
 
@@ -18,6 +22,8 @@ DEPENDENCIES:
   - FlutterMacOS (from `Flutter/ephemeral`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
   - share_plus (from `Flutter/ephemeral/.symlinks/plugins/share_plus/macos`)
+  - unisub_video_processing (from `Flutter/ephemeral/.symlinks/plugins/unisub_video_processing/macos`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - video_player_macos (from `Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos`)
 
 EXTERNAL SOURCES:
@@ -31,6 +37,10 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
   share_plus:
     :path: Flutter/ephemeral/.symlinks/plugins/share_plus/macos
+  unisub_video_processing:
+    :path: Flutter/ephemeral/.symlinks/plugins/unisub_video_processing/macos
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
   video_player_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos
 
@@ -40,6 +50,8 @@ SPEC CHECKSUMS:
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
   path_provider_foundation: bb55f6dbba17d0dccd6737fe6f7f34fbd0376880
   share_plus: 510bf0af1a42cd602274b4629920c9649c52f4cc
+  unisub_video_processing: c3af44d4af7fec2123b21bf9f5a48a0267b57d9f
+  url_launcher_macos: f87a979182d112f911de6820aefddaf56ee9fbfd
   video_player_macos: 327375699d6336b3164f0dc052a68b32ef0fd6ba
 
 PODFILE CHECKSUM: 54d867c82ac51cbd61b565781b9fada492027009
